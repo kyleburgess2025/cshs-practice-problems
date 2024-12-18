@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  sql:
+    image: mysql:5.7
+    restart: always
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: xss-attack
+      MYSQL_USER: xss-attack
+      MYSQL_PASSWORD: password
+    expose: 
+      - "3306"
+  
+  xss-attack:
+    image: xss-attack
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - sql
+    environment:
+      MYSQL_HOST: sql
+      MYSQL_PORT: 3306
+      MYSQL_USER: xss-attack
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: xss-attack
